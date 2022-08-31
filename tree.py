@@ -1,15 +1,17 @@
+import os
 DEBUG = True
 
+DEFAULT_PATH = "sample"
 DEFAULT_ROOT = "a.txt"
+def getFileTree(dirname, filename):
 
-def getFileTree(filename):
-
-  node = getFileNodes(filename)
+  data = {"dir": dirname}
+  node = getFileNodes(filename, data)
   tree = Tree(node=node)
 
   return tree
 
-def getFileNodes(filename):
+def getFileNodes(filename, data={}):
   """
   Given a filename, parse it
   return a node with children assigned based on the filename parsed from the given file content, recursively
@@ -20,7 +22,7 @@ def getFileNodes(filename):
 
   parentNode = TreeNode(filename)
 
-  with open (filename, "r") as f:
+  with open (os.path.join(data["dir"], filename), "r") as f:
     lines = f.readlines()
 
   if (DEBUG):
@@ -30,7 +32,7 @@ def getFileNodes(filename):
 
   for line in lines:
     
-    childNode = getFileNodes(line.strip())
+    childNode = getFileNodes(line.strip(), data)
     if (DEBUG): print(f"- [created] [child]    {childNode}")
     parentNode.AddChild(childNode)
 
@@ -87,7 +89,7 @@ class TreeNode():
 
 def main():
   if (DEBUG): print("# Tree creation\n")
-  tree = getFileTree(DEFAULT_ROOT)
+  tree = getFileTree(DEFAULT_PATH, DEFAULT_ROOT)
 
   if (DEBUG): print("\n---\n")
 
